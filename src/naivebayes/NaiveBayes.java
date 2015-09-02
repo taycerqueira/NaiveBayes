@@ -1,5 +1,10 @@
 package naivebayes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import weka.core.Attribute;
 import weka.core.AttributeStats;
 import weka.core.Instances;
@@ -11,30 +16,68 @@ public class NaiveBayes {
 	private DataSource data;
 	private Instances instances;
 	
-	public NaiveBayes(DataSource data, Instances instances) {
+	public NaiveBayes() {
 		super();
-		this.data = data;
-		this.instances = instances;
 	}
 	
+	public void lerDados(String nomeArquivo) throws Exception{
+		this.data = new DataSource (nomeArquivo);
+	    this.instances = data.getDataSet();
+	   
+	}
 	
 	public double calcularProbabilidade(String value, String atributo, String classe){
 		
-		return 0;
+		
+		int totalClasse = getTotalClasse(classe);
+		int totalValor = getTotal(value, atributo, classe);
+		
+		return totalValor/(double)totalClasse;
 		
 	}
 	
-	
-	
-	public int getTotalPorClasse(String classe){
+	public int getTotal(String value, String atributo, String classe){
 		
-		Attribute at = instances.attribute("class"); // pega o atributo class que é nominal
+		Attribute at = instances.attribute(atributo); 
+		if(at.isNumeric()){
+			Double v = Double.parseDouble(value);
+			return getTotalNumero(v, at, classe);// pega o total de ocorrencias de um número
+		}else{
+			AttributeStats status = instances.attributeStats(at.index()); // pega o status do atributo - contem dados de qtd de um valor por atributo
+			int index = at.indexOfValue(value); // pega o indice da classe que deseja analise, por exemplo: Iris-setosa 
+			return status.nominalCounts[index]; // pega a quantidade de instancias que tem Iris-setosa como classe
+		}
+	}
+	
+	private int getTotalClasse(String classe){
+		Attribute at = instances.attribute("class"); 
 		AttributeStats status = instances.attributeStats(at.index()); // pega o status do atributo - contem dados de qtd de um valor por atributo
-		
 		int index = at.indexOfValue(classe); // pega o indice da classe que deseja analise, por exemplo: Iris-setosa 
-		int value = status.nominalCounts[index]; // pega a quantidade de instancias que tem Iris-setosa como classe
+		return status.nominalCounts[index]; // pega a quantidade de instancias que tem Iris-setosa como classe
+	}
 	
-		return value;
+	private int getTotalNumero(Double v, Attribute attribute, String classe) {
+		
+		double[] datas = instances.attributeToDoubleArray(attribute.index()); 
+		
+		Arrays.sort(datas);
+		
+		int qtd = 0;
+		
+		for(int i = 0; i < datas.length; i++){
+			if(datas[i] == v){
+				qtd++;
+			}
+		}
+		
+		return qtd;
+	}
+	
+
+	public void processar(){
+		
+		double por = calcularProbabilidade("5.1", "sepallength", "Iris-virginica");
+		System.out.println(por);
 	}
 
 }

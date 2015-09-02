@@ -1,14 +1,18 @@
 package naivebayes;
 
 import java.io.BufferedReader;
+
 import weka.core.Attribute;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
+import weka.experiment.Stats;
 
 public class BaseDados {
 	
@@ -54,6 +58,11 @@ public class BaseDados {
 	    		System.out.println(data.attributeStats(at.index()).nominalCounts[0]+"");
 	    		
 	    		System.out.println(at.indexOfValue("Iris-virginica"));
+	    	}else if(at.name().equals("sepallength")){
+	    		double [] st = data.attributeToDoubleArray(at.index());
+	    		Arrays.sort(st);
+	    		System.out.println(st);
+	    		
 	    	}
 	    	
 	    }
