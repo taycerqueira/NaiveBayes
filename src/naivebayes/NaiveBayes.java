@@ -31,6 +31,7 @@ public class NaiveBayes {
 		int totalClasse = getTotalClasse(classe);
 		int totalValor = getTotal(value, atributo, classe);
 		
+		
 		return totalValor/(double)totalClasse;// calcula a probabilidade do valor na classe no atributo 	
 	}
 	
@@ -139,27 +140,23 @@ public class NaiveBayes {
 			String classe = at.value(i);
 			
 			for(int j = 0; j < attributes.size(); j++){
-				
-				probabilidade *= getTotal(values.get(j), attributes.get(j), classe);
-				System.out.println("Probabilidade");
+				double v = calcularProbabilidade(values.get(j), attributes.get(j), classe);
+				probabilidade = probabilidade * v;
 			}
 			result[i] = probabilidade;
 		}
 		
+		double max = 0;
+		
 		for(int i = 0; i < numClasses; i++){
-			System.out.println(result[i]);
-		}
-		for(int i = 0; i < numClasses - 1; i++){
-			if(result[i] > result[i+1]){
+			if(result[i] >= max){
+				max = result[i];
 				classeFinal = at.value(i);
-			}else{
-				classeFinal = at.value(i+1);
 			}
 		}
 		
 		
-		
-		System.out.println(classeFinal);
+		System.out.println("Classe é = "+classeFinal);
 	}
 
 	public List<String> getAttributes() {
