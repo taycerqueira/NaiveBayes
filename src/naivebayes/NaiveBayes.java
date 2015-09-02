@@ -3,10 +3,12 @@ package naivebayes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 import weka.core.Attribute;
 import weka.core.AttributeStats;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -58,14 +60,17 @@ public class NaiveBayes {
 	
 	private int getTotalNumero(Double v, Attribute attribute, String classe) {
 		
-		double[] datas = instances.attributeToDoubleArray(attribute.index()); 
-		
-		Arrays.sort(datas);
-		
+		Enumeration<Instance> lines = instances.enumerateInstances();
+		int index_class = instances.attribute("class").index();
 		int qtd = 0;
 		
-		for(int i = 0; i < datas.length; i++){
-			if(datas[i] == v){
+		while(lines.hasMoreElements()){
+			
+			Instance line = lines.nextElement();
+			double value = line.value(attribute);
+			String aux_classe = line.stringValue(index_class);
+			
+			if(classe.equals(aux_classe) && value == v){
 				qtd++;
 			}
 		}
@@ -76,7 +81,7 @@ public class NaiveBayes {
 
 	public void processar(){
 		
-		double por = calcularProbabilidade("5.1", "sepallength", "Iris-virginica");
+		double por = calcularProbabilidade("5.1", "sepallength", "Iris-setosa");
 		System.out.println(por);
 	}
 
