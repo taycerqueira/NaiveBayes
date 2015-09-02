@@ -16,6 +16,8 @@ import weka.core.Instances;
 
 public class BaseDados {
 	
+	DataSource source;
+    Instances data;
 	private String relationName;
 	private Enumeration<weka.core.Attribute> listaAtributos;
 	private List<String> classes;
@@ -24,35 +26,29 @@ public class BaseDados {
 	//O objetivo é ler um arquivo qualquer no formato arff e salvar o conteúdo dele em uma estrutura de dados
 	private BufferedReader dados;
 	
-	public BaseDados(String nomeArquivo){
+	public BaseDados(String nomeArquivo) throws Exception{
 		this.nomeArquivo = nomeArquivo;
 	}
 	
 	public void lerArquivo() throws Exception{
 			
 	    //importa a base de dados ARFF utilizando classes da Weka
-	    DataSource source = new DataSource (this.nomeArquivo);
-	    Instances data = source.getDataSet();
+	    this.source = new DataSource (this.nomeArquivo);
+	    this.data = source.getDataSet();
 	    //imprime informações associadas à base de dados
 	    System.out.println("Num. instancias:" + data.numInstances());  
 	    System.out.println("Num. atributos:" + data.numAttributes());  
 	    //imprime o conteúdo da base   
 	    //System.out.println("Base de Dados:");
 	    //System.out.println(D.toString());
-
-	    for(int i=0;i< data.numAttributes();i++)
-	    {
-	    	String name = data.attribute(i).name();
-	    	int type = data.attribute(i).type();
-	    	String typeName = "";
-	    	switch(type)
-	    	{
-	    		case weka.core.Attribute.NUMERIC: typeName = "Numeric"; break;
-	    		case weka.core.Attribute.NOMINAL: typeName = "Nominal"; break;
-	    		case weka.core.Attribute.STRING: typeName = "String"; break;
-	    	}
-	    	System.out.println(name+" type "+typeName);
-	    }
+	    
+        // Imprime cada instância (linha) dos dados
+        for (int i = 0; i < data.numInstances(); i++) {
+            Instance atual = data.instance(i);
+            String teste = atual.attribute(1).name();
+            System.out.println(teste + "\n");
+        }
+	    
 	    Enumeration<weka.core.Attribute> e = data.enumerateAttributes();
 	      /*while (e.hasMoreElements()){
 	          System.out.println(e.nextElement().name()); 
@@ -62,6 +58,27 @@ public class BaseDados {
 		}
 
 	
+	}
+	
+	public void getAtributos(){
+		
+	    //pega os nomes e os tipos dos atributos
+	    System.out.println("---------> Atributos: ");
+	    for(int i=0;i< data.numAttributes();i++)
+	    {
+	    	String name = data.attribute(i).name();
+	    	int type = data.attribute(i).type();
+	    	int indice = data.attribute(i).index();
+	    	String typeName = "";
+	    	switch(type)
+	    	{
+	    		case weka.core.Attribute.NUMERIC: typeName = "Numeric"; break;
+	    		case weka.core.Attribute.NOMINAL: typeName = "Nominal"; break;
+	    		case weka.core.Attribute.STRING: typeName = "String"; break;
+	    	}
+	    	System.out.println(name + " type " + typeName + " indice: " + indice);
+	    }
+	    
 	}
 
 }
